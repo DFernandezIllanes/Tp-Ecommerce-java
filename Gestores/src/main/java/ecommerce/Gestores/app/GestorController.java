@@ -29,7 +29,7 @@ public class GestorController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Faltan datos del gestor");
         }
         repoGestor.save(newGestor);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Gestor Creado");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Gestor Creado con el id: " + newGestor.getId());
     }
 
     @PostMapping("/gestores/{gestorId}/productos")
@@ -39,7 +39,7 @@ public class GestorController {
     ) {
         ArrayList<String> productosErroneos = new ArrayList<>(productos.size());
         Boolean todosOk = true;
-        String finalMessage = "Estos productos son erroneos [";
+        String finalMessage = "Estos productos ya existen o tienen un error[";
         Optional<Gestor> gestorOptional = repoGestor.findById(gestorId);
 
 
@@ -51,13 +51,21 @@ public class GestorController {
             for (int i = 0; i < productos.size(); i++) {
                 DTOProductoBase newProdBase = (DTOProductoBase) productos.get(i);
 
-                ProductoBase unProducto = repoProductoBase.findByNombreAndGestorId(newProdBase.getNombre(), gestorId);
-
-                if (!(unProducto == null) && unProducto.getNombre() != null && unProducto.getGestor().getId() == gestorId) {
+                if(newProdBase.getNombre().isEmpty() || newProdBase.getPrecio().toString().isEmpty() || newProdBase.getTiempoDeFabricacion().isEmpty()){
                     todosOk = false;
-                    productosErroneos.add(unProducto.getNombre());
-                }
+                    if(newProdBase.getNombre().isEmpty()){
+                        productosErroneos.add("Indice arr: " + i + ",");
+                    }else{
+                        productosErroneos.add(newProdBase.getNombre());
+                    }
+                }else{
+                    ProductoBase unProducto = repoProductoBase.findByNombreAndGestorId(newProdBase.getNombre(), gestorId);
 
+                    if (!(unProducto == null) && unProducto.getNombre() != null && unProducto.getGestor().getId() == gestorId) {
+                        todosOk = false;
+                        productosErroneos.add(unProducto.getNombre() + ",");
+                    }
+                }
             }
 
             if (!todosOk) {
@@ -73,7 +81,7 @@ public class GestorController {
                 ProductoBase productoBase = new ProductoBase(newProdBase.getNombre(),  newProdBase.getPrecio(), newProdBase.getDescripcion() , newProdBase.getTiempoDeFabricacion(), gestor);
                 repoProductoBase.save(productoBase);
             }
-            return ResponseEntity.status(HttpStatus.OK).body("Productos base creados");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Productos base creados");
         }
     }
 
