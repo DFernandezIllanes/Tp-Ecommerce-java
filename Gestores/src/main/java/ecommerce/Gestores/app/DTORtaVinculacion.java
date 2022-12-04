@@ -2,7 +2,7 @@ package ecommerce.Gestores.app;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.omg.CORBA.PRIVATE_MEMBER;
+//import org.omg.CORBA.PRIVATE_MEMBER;
 
 public class DTORtaVinculacion {
     @Getter @Setter

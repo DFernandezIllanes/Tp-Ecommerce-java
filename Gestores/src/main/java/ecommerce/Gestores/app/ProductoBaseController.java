@@ -33,7 +33,7 @@ public class ProductoBaseController {
         } else {
             ProductoBase productoBase = productoBaseOptional.get();
 
-            if(posiblePersonalizacionOptional.get() != null && posiblePersonalizacionOptional.get().getProductoBase().getId() == productoBaseId) {
+            if(posiblePersonalizacionOptional.isPresent() && posiblePersonalizacionOptional.get().getProductoBase().getId() == productoBaseId) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el área de personalización");
             } else {
                 PosiblePersonalizacion posiblePersonalizacion = new PosiblePersonalizacion(personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase);

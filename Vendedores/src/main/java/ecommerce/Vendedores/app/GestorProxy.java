@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface GestorProxy {
 
     @GetMapping("/gestores/{gestorId}/vendedores/{vendedoresId}")
-    DTORtaVinculacion existeGestor(@PathVariable("gestorId") Long gestorId,@PathVariable("vendedoresId") Long vendedoresId);
+    DTORtaVinculacion existeGestor(@PathVariable("gestorId") Long gestorId,
+    		@PathVariable("vendedoresId") Long vendedoresId);
 
     @GetMapping("/gestores/{gestorId}/productoBase/{productoBaseId}")
-    DTORtaPersonalizacion posiblePersonalizacion(@PathVariable("gestorId")Long gestorId, @PathVariable("productoBaseId")Long productoBaseId);
+    DTORtaPersonalizacion posiblePersonalizacion(@PathVariable("gestorId")Long gestorId, 
+    		@PathVariable("productoBaseId")Long productoBaseId);
 }

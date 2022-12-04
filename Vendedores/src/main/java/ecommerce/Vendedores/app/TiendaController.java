@@ -83,7 +83,28 @@ public class TiendaController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto final");
         //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto final no pertenece al vendedor asociado a esta tienda");
     }
-
+    
+    @GetMapping("/tiendas/{tiendaId}/publicaciones/{publicacionId}")
+	public DTORtaPublicacion publicacion(@PathVariable("tiendaId")Long tiendaId, 
+			@PathVariable("publicacionId")Long publicacionId) {
+    	
+    	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
+    	Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
+    	
+    	if(!tiendaOptional.isPresent() || !publicacionOptional.isPresent()) {
+    		return new DTORtaPublicacion("no existe");
+    	}
+    	
+    	Publicacion publicacion = publicacionOptional.get();
+    	
+    	if(publicacion.isActiva()) {
+    		return new DTORtaPublicacion("existe", publicacion.getNombre(), publicacion.getPrecio());
+    	} else {
+    		return new DTORtaPublicacion("publicacion inactiva");
+    	}
+    }
+    
+    
     @Transactional
     @DeleteMapping("publicaciones/{publicacionId}")
     public @ResponseBody ResponseEntity<Object> deletePublicacion(@PathVariable("publicacionId")Long publicacionId){
