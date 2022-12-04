@@ -141,5 +141,53 @@ public class TiendaController {
 
         publicacion.setEstado(false);
         return ResponseEntity.status(HttpStatus.OK).body("Publicacion pausada");
-    }     
+    }  
+    
+    @GetMapping("/tiendas/{tiendaId}/datospublicaciones")
+	public DTODatosVenta obtenerDatosVenta(@PathVariable("tiendaId") Long tiendaId, 
+			@RequestBody List<Long> listaPublicacionesIds) {
+    	
+    	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
+    	Tienda tienda = tiendaOptional.get();
+    	
+    	List<Publicacion> publicaciones = tienda.getPublicaciones();
+    	List<Long> productosBaseIds = new ArrayList<>();
+    	
+    	Iterator<Publicacion> iteradorPublicaciones = publicaciones.iterator();
+    	while(iteradorPublicaciones.hasNext()) {
+    		Publicacion publicacion = iteradorPublicaciones.next();
+    		
+    		for(int i=0; i<listaPublicacionesIds.size(); i++) {
+    			
+    			if(publicacion.getId().equals(listaPublicacionesIds.get(i))) {
+    				
+    				productosBaseIds.add(publicacion.getProductoFinal().getProductoBase());
+    			}
+    		}
+    	}    	
+    	
+    	//DTODatosVenta datosVenta = proxy.buscarTiempoDeFabricacion(productosBaseIds);
+    	DTODatosVenta datosVenta = new DTODatosVenta("7 dias");
+    	
+    	Vendedor vendedor = tienda.getVendedor();    	
+    	
+    	List<String> metodosDePago = new ArrayList<>();
+    	
+    	List<MetodoPago> formasDePago = vendedor.getMetodoPago();
+    	
+    	Iterator<MetodoPago> iteradorFormasDePago = formasDePago.iterator();
+    	while(iteradorFormasDePago.hasNext()) {
+    		
+    		MetodoPago metodo = iteradorFormasDePago.next();
+    		if(metodo.getActivo()) {
+    			metodosDePago.add(metodo.getMetodopago());
+    		}
+    	}
+    	
+    	datosVenta.setMetodosDePago(metodosDePago);
+    	datosVenta.setNombreCompletoVendedor(vendedor.getNombre() + " " + vendedor.getApellido());
+    	
+    	return datosVenta;
+    	
+    }
 }

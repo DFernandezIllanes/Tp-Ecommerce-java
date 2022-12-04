@@ -2,10 +2,10 @@ package ecommerce.Compradores.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -41,12 +41,13 @@ public class Compra {
 	@Column(name = "vendedor_id")
 	private Long tiendaId;
 	
+
 	@Column(name = "nombre_completo_vendedor")
 	private String nombreCompletoVendedor;
 	
 	@OneToMany(mappedBy = "compra")
-	private List<ItemCompra> items;	
-		
+	private List<Item> items;	
+	
 	@ElementCollection
 	@CollectionTable(name = "compra_metodoDePago", joinColumns = @JoinColumn(name = "compra_id"))
 	@Column(name = "metodoDePago")
@@ -56,8 +57,9 @@ public class Compra {
 	@Column(name = "fecha")
 	private LocalDateTime fecha;
 	
+	
 	@Column(name = "tiempo_de_entrega_aproximado")
-	private String tiempoDeEntregaAproximado;
+	private String tiempoDeEntregaAproximado;	
 	
 	//------------------------------ CONSTRUCTORES -----------------------------------------------------
 	
@@ -92,11 +94,10 @@ public class Compra {
 	}
 	
 	public Compra(Long compradorId, String nombreCompletoComprador, Long vendedorId,
-			String nombreCompletoVendedor, List<ItemCompra> items) {
+			String nombreCompletoVendedor, List<Item> items) {
 		super();
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
-		this.tiendaId = tiendaId;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = items;
 		this.metodosDePago = new ArrayList<>();
@@ -104,7 +105,7 @@ public class Compra {
 	}
 	
 	public Compra(Long id, Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<ItemCompra> items) {
+			String nombreCompletoVendedor, List<Item> items) {
 		super();
 		this.id = id;
 		this.compradorId = compradorId;
@@ -117,10 +118,9 @@ public class Compra {
 	}
 	
 	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<ItemCompra> items, List<String> metodosDePago,
+			String nombreCompletoVendedor, List<Item> items, List<String> metodosDePago,
 			String tiempoDeEntregaAproximado) {
 		super();
-		this.id = id;
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
 		this.tiendaId = tiendaId;
@@ -132,7 +132,7 @@ public class Compra {
 	}
 
 	public Compra(Long id, Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<ItemCompra> items, List<String> metodosDePago, LocalDateTime fecha,
+			String nombreCompletoVendedor, List<Item> items, List<String> metodosDePago, LocalDateTime fecha,
 			String tiempoDeEntregaAproximado) {
 		super();
 		this.id = id;
@@ -146,6 +146,28 @@ public class Compra {
 		this.tiempoDeEntregaAproximado = tiempoDeEntregaAproximado;
 	}	
 	
+	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId, List<Item> items ) {
+		super();
+		this.compradorId = compradorId;
+		this.nombreCompletoComprador = nombreCompletoComprador;
+		this.tiendaId = tiendaId;
+		this.items = items;
+		this.fecha = LocalDateTime.now();
+		this.metodosDePago = new ArrayList<>();
+	}
+	
 	//------------------------------ MÉTODOS -----------------------------------------------------
+	
+	public void agregarListaDeItems(List<Item> items) {
+		
+		Iterator<Item> iteradorItems = items.iterator();
+		
+		while(iteradorItems.hasNext()) {
+			Item item = iteradorItems.next();
+			item.setCompra(this);
+		}
+		
+		this.items = items;
+	}
 
 }

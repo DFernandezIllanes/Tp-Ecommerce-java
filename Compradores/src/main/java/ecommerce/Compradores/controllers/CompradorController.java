@@ -22,10 +22,12 @@ import ecommerce.Compradores.models.Compra;
 import ecommerce.Compradores.models.Comprador;
 import ecommerce.Compradores.models.Item;
 import ecommerce.Compradores.models.dtos.DTOComprador;
+import ecommerce.Compradores.models.dtos.DTODatosVenta;
 import ecommerce.Compradores.models.dtos.DTOItem;
 
 import ecommerce.Compradores.models.dtos.DTORtaPublicacion;
 import ecommerce.Compradores.proxys.TiendaProxy;
+import ecommerce.Compradores.repositories.RepoCarritoDeCompra;
 import ecommerce.Compradores.repositories.RepoCompra;
 import ecommerce.Compradores.repositories.RepoComprador;
 import ecommerce.Compradores.repositories.RepoItem;
@@ -42,6 +44,9 @@ public class CompradorController {
 	
 	@Autowired
 	RepoCompra repoCompra;
+	
+	@Autowired
+	RepoCarritoDeCompra repoCarrito;
 	
 	@Autowired
 	TiendaProxy proxy;
@@ -122,12 +127,59 @@ public class CompradorController {
         	
         	Comprador comprador = compradorOptional.get();
         	
-        	Compra compra = new Compra(comprador.getId(), comprador.getNombre() + " " + comprador.getApellido(),
-        			comprador.getCarrito().getTiendaId());
-        	
-        	repoCompra.save(compra);
-        	
-        	return ResponseEntity.status(HttpStatus.OK).body("Compra Realizada, id: " + compra.getId());
+        	if(comprador.getCarrito().getTiendaId() == null) {
+        		
+        		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No hay items en el carrito de compra para generar una compra");
+        		
+        	} else {
+        		
+        		Optional<CarritoDeCompra> carritoOptional = repoCarrito.findById(comprador.getCarrito().getId());
+        		CarritoDeCompra carrito = carritoOptional.get();
+        		
+        		List<Item> items = repoItem.findByCarrito(carrito);
+        		
+        		Iterator<Item> iteradorItems = items.iterator();
+        		
+        		List<Long> listaPublicacionesIds = new ArrayList<>();
+        		
+        		while(iteradorItems.hasNext()) {
+        			Item item = iteradorItems.next();
+        			
+        			listaPublicacionesIds.add(item.getPublicacionId());        			
+        		}
+        		
+        		iteradorItems = items.iterator();
+        		
+        		//DTODatosVenta datosVenta = proxy.obtenerDatosVenta(carrito.getTiendaId(), listaPublicacionesIds);
+        		List<String> lista = new ArrayList<>();
+        		lista.add("efectivo");
+        		lista.add("debito");
+        		
+        		DTODatosVenta datosVenta = new DTODatosVenta("Thiago Almada", lista, "7 dias");
+        		
+        		Compra compra = new Compra(comprador.getId(), comprador.getNombre() + " " + comprador.getApellido(),
+            			comprador.getCarrito().getTiendaId());
+        		
+        		compra.setNombreCompletoVendedor(datosVenta.getNombreCompletoVendedor());
+        		compra.setTiempoDeEntregaAproximado(datosVenta.getTiempoEstimadoDeEntrega());
+        		compra.setMetodosDePago(datosVenta.getMetodosDePago());
+        		
+        		repoCompra.save(compra);        		
+        		
+        		while(iteradorItems.hasNext()) {
+        			Item item = iteradorItems.next();
+        			
+        			item.setCarrito(null);
+        			item.setCompra(compra);
+        		}
+        		
+        		carrito.setTiendaId(null);
+        		repoCarrito.save(carrito);
+        		
+        		repoItem.saveAll(items);
+            	
+            	return ResponseEntity.status(HttpStatus.OK).body("Compra Realizada, id: " + compra.getId());
+        	}
         }
 	}
 

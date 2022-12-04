@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,15 +32,17 @@ public class Item {
 	@Column(name = "publicacionId")
 	private Long publicacionId;
 	
-//	@Column(name = "tiendaId")
-//	private Long tiendaId;
-	
 	@Column(name = "precio")
 	private Double precio;
 	
 	@ManyToOne
 	@JoinColumn(name = "carritoId", referencedColumnName = "id")
 	private CarritoDeCompra carrito;	
+	
+	@ManyToOne
+	@JoinColumn(name = "compraId", referencedColumnName = "id")
+	@JsonBackReference
+	private Compra compra;
 	
 	//--------------------------- CONSTRUCTORES ---------------------------------
 	
@@ -87,6 +91,33 @@ public class Item {
 		this.carrito = carrito;
 	}
 	
+	public Item(Integer cantidad, Long publicacionId, Double precio, Compra compra) {
+		super();
+		this.cantidad = cantidad;
+		this.publicacionId = publicacionId;
+		this.precio = precio;
+		this.compra = compra;
+	}
+	
+	public Item(Integer cantidad, Long publicacionId, Double precio, CarritoDeCompra carrito, Compra compra) {
+		super();
+		this.cantidad = cantidad;
+		this.publicacionId = publicacionId;
+		this.precio = precio;
+		this.carrito = carrito;
+		this.compra = compra;
+	}
+
+	public Item(Long id, Integer cantidad, Long publicacionId, Double precio, CarritoDeCompra carrito, Compra compra) {
+		super();
+		this.id = id;
+		this.cantidad = cantidad;
+		this.publicacionId = publicacionId;
+		this.precio = precio;
+		this.carrito = carrito;
+		this.compra = compra;
+	}
+	
 //	public Item(Long id, Integer cantidad, Long publicacionId, Long tiendaId, Double precio, CarritoDeCompra carrito) {
 //		super();
 //		this.id = id;
@@ -96,6 +127,8 @@ public class Item {
 //		this.precio = precio;
 //		this.carrito = carrito;
 //	}
+	
+	
 	
 	
 }

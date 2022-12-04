@@ -1,5 +1,7 @@
 package ecommerce.Compradores.models;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -65,6 +67,10 @@ public class Comprador {
 	
 	public void quitarItem(Item item) {
 		this.carrito.quitarItem(item);
+	}
+	
+	public List<Item> vaciarCarrito(){
+		return this.carrito.vaciarCarrito();
 	}
 
 }

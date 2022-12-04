@@ -1,6 +1,7 @@
 package ecommerce.Compradores.models;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -81,5 +82,21 @@ public class CarritoDeCompra {
 	
 	public void quitarItem(Item item) {
 		this.items.remove(item);
+	}
+	
+	public List<Item> vaciarCarrito(){
+		
+		List<Item> listaDeItems = this.items;
+		this.tiendaId = null;
+		
+		Iterator<Item> iteradorListaDeItems = listaDeItems.iterator();
+		
+		while(iteradorListaDeItems.hasNext()) {
+			Item item = iteradorListaDeItems.next();
+			
+			item.setCarrito(null);
+		}
+		
+		return listaDeItems;
 	}
 }
