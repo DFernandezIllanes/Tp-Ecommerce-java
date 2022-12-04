@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -37,6 +38,7 @@ public class GestorController {
             @PathVariable("gestorId") Long gestorId,
             @RequestBody ArrayList<DTOProductoBase> productos
     ) {
+    	List<Long> ids = new ArrayList<>();
         ArrayList<String> productosErroneos = new ArrayList<>(productos.size());
         Boolean todosOk = true;
         String finalMessage = "Estos productos ya existen o tienen un error[";
@@ -80,8 +82,9 @@ public class GestorController {
                 DTOProductoBase newProdBase = (DTOProductoBase) productos.get(i);
                 ProductoBase productoBase = new ProductoBase(newProdBase.getNombre(),  newProdBase.getPrecio(), newProdBase.getDescripcion() , newProdBase.getTiempoDeFabricacion(), gestor);
                 repoProductoBase.save(productoBase);
+                ids.add(productoBase.getId());
             }
-            return ResponseEntity.status(HttpStatus.CREATED).body("Productos base creados");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Productos base creados, ids: " + ids.toString());
         }
     }
 

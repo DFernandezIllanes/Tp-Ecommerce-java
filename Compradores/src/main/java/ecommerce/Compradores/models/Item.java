@@ -30,11 +30,14 @@ public class Item {
 	@Column(name = "publicacionId")
 	private Long publicacionId;
 	
+//	@Column(name = "tiendaId")
+//	private Long tiendaId;
+	
 	@Column(name = "precio")
 	private Double precio;
 	
 	@ManyToOne
-	@JoinColumn(name = "carrito_id", referencedColumnName = "id")
+	@JoinColumn(name = "carritoId", referencedColumnName = "id")
 	private CarritoDeCompra carrito;	
 	
 	//--------------------------- CONSTRUCTORES ---------------------------------
@@ -47,7 +50,16 @@ public class Item {
 		super();
 		this.cantidad = cantidad;
 		this.publicacionId = publicacionId;
+		this.precio = precio;
 	}
+	
+//	public Item(Integer cantidad, Long publicacionId, Long tiendaId, Double precio) {
+//		super();
+//		this.cantidad = cantidad;
+//		this.publicacionId = publicacionId;
+//		this.tiendaId = tiendaId;
+//	}
+	
 	
 	public Item(Integer cantidad, Long publicacionId, Double precio, CarritoDeCompra carrito) {
 		super();
@@ -57,6 +69,15 @@ public class Item {
 		this.carrito = carrito;
 	}
 	
+//	public Item(Integer cantidad, Long publicacionId, Long tiendaId, Double precio, CarritoDeCompra carrito) {
+//		super();
+//		this.cantidad = cantidad;
+//		this.publicacionId = publicacionId;
+//		this.tiendaId = tiendaId;
+//		this.precio = precio;
+//		this.carrito = carrito;
+//	}
+	
 	public Item(Long id, Integer cantidad, Long publicacionId, Double precio, CarritoDeCompra carrito) {
 		super();
 		this.id = id;
@@ -65,6 +86,16 @@ public class Item {
 		this.precio = precio;
 		this.carrito = carrito;
 	}
+	
+//	public Item(Long id, Integer cantidad, Long publicacionId, Long tiendaId, Double precio, CarritoDeCompra carrito) {
+//		super();
+//		this.id = id;
+//		this.cantidad = cantidad;
+//		this.publicacionId = publicacionId;
+//		this.tiendaId = tiendaId;
+//		this.precio = precio;
+//		this.carrito = carrito;
+//	}
 	
 	
 }

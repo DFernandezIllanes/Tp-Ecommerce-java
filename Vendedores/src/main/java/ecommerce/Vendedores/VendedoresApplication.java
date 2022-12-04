@@ -1,6 +1,11 @@
 package ecommerce.Vendedores;
 
 import ecommerce.Vendedores.app.RepoVendedor;
+import ecommerce.Vendedores.models.MetodoPago;
+import ecommerce.Vendedores.models.Personalizacion;
+import ecommerce.Vendedores.models.ProductoFinal;
+import ecommerce.Vendedores.models.Publicacion;
+import ecommerce.Vendedores.models.Tienda;
 import ecommerce.Vendedores.models.Vendedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +29,7 @@ public class VendedoresApplication {
 
 	@Bean
 	public CommandLineRunner init(RepoVendedor repoVendedor){
-		config.exposeIdsFor(Vendedor.class);
+		config.exposeIdsFor(Vendedor.class, ProductoFinal.class, Personalizacion.class, Tienda.class, Publicacion.class, MetodoPago.class);
 
 		return (algo)->{
 //			repoVendedor.save(new Vendedor("Santiago", "Barrios"));

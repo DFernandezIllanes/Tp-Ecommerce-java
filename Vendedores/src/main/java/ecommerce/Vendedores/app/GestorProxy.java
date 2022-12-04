@@ -15,4 +15,6 @@ public interface GestorProxy {
     @GetMapping("/gestores/{gestorId}/productoBase/{productoBaseId}")
     DTORtaPersonalizacion posiblePersonalizacion(@PathVariable("gestorId")Long gestorId, 
     		@PathVariable("productoBaseId")Long productoBaseId);
+    
+    
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,6 +34,9 @@ public class CarritoDeCompra {
 	@OneToMany(mappedBy = "carrito")
 	private List<Item> items;
 	
+	@Column(name = "tiendaId")
+	private Long tiendaId;
+	
 	//------------------------------ CONSTRUCTORES -------------------------------------
 	
 	public CarritoDeCompra() {
@@ -58,6 +62,14 @@ public class CarritoDeCompra {
 		this.id = id;
 		this.comprador = comprador;
 		this.items = items;
+	}
+	
+	public CarritoDeCompra(Long id, Comprador comprador, List<Item> items, Long tiendaId) {
+		super();
+		this.id = id;
+		this.comprador = comprador;
+		this.items = items;
+		this.tiendaId = tiendaId;
 	}
 	
 	//------------------------------ MÉTODOS -------------------------------------

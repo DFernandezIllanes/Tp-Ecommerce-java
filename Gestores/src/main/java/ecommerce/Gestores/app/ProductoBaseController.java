@@ -38,7 +38,7 @@ public class ProductoBaseController {
             } else {
                 PosiblePersonalizacion posiblePersonalizacion = new PosiblePersonalizacion(personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase);
                 repoPosiblePersonalizacion.save(posiblePersonalizacion);
-                return ResponseEntity.status(HttpStatus.OK).body("Posible personalización añadida");
+                return ResponseEntity.status(HttpStatus.OK).body("Posible personalización añadida, id: " + posiblePersonalizacion.getId());
             }
         }
     }

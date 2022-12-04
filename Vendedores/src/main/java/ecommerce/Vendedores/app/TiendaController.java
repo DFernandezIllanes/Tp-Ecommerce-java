@@ -1,6 +1,7 @@
 package ecommerce.Vendedores.app;
 
 import ecommerce.Vendedores.models.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -12,6 +13,8 @@ import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -29,6 +32,9 @@ public class TiendaController {
 
     @Autowired
     RepoPersonalizacion repoPersonalizacion;
+    
+    @Autowired
+    GestorProxy proxy;
 
     @PostMapping("tienda/{tiendaId}/newPublicacion")
     public @ResponseBody ResponseEntity<Object> crearPublicacion(
@@ -66,7 +72,7 @@ public class TiendaController {
                     if (personalizacion.getProductoFinal().getId().equals(productoFinal.getId())) {
                         Publicacion newPublicacion = new Publicacion(tienda, productoFinal, personalizacion.getNombre(), productoFinal.getPrecio() + personalizacion.getPrecio());
                         repoPublicacion.save(newPublicacion);
-                        return ResponseEntity.status(HttpStatus.OK).body("Publicacion creada con exito!");
+                        return ResponseEntity.status(HttpStatus.OK).body("Publicacion creada con exito!, id: " + newPublicacion.getId());
                     }
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("No coinside el id del producto final con el de la personalziacion");
                 }
@@ -135,5 +141,5 @@ public class TiendaController {
 
         publicacion.setEstado(false);
         return ResponseEntity.status(HttpStatus.OK).body("Publicacion pausada");
-    }
+    }     
 }
