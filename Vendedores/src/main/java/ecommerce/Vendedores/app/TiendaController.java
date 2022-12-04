@@ -1,6 +1,7 @@
 package ecommerce.Vendedores.app;
 
 import ecommerce.Vendedores.models.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -12,6 +13,8 @@ import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -29,6 +32,9 @@ public class TiendaController {
 
     @Autowired
     RepoPersonalizacion repoPersonalizacion;
+    
+    @Autowired
+    GestorProxy proxy;
 
     @PostMapping("tienda/{tiendaId}/newPublicacion")
     public @ResponseBody ResponseEntity<Object> crearPublicacion(
@@ -66,7 +72,7 @@ public class TiendaController {
                     if (personalizacion.getProductoFinal().getId().equals(productoFinal.getId())) {
                         Publicacion newPublicacion = new Publicacion(tienda, productoFinal, personalizacion.getNombre(), productoFinal.getPrecio() + personalizacion.getPrecio());
                         repoPublicacion.save(newPublicacion);
-                        return ResponseEntity.status(HttpStatus.OK).body("Publicacion creada con exito!");
+                        return ResponseEntity.status(HttpStatus.OK).body("Publicacion creada con exito!, id: " + newPublicacion.getId());
                     }
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("No coinside el id del producto final con el de la personalziacion");
                 }
@@ -83,7 +89,28 @@ public class TiendaController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto final");
         //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto final no pertenece al vendedor asociado a esta tienda");
     }
-
+    
+    @GetMapping("/tiendas/{tiendaId}/publicaciones/{publicacionId}")
+	public DTORtaPublicacion publicacion(@PathVariable("tiendaId")Long tiendaId, 
+			@PathVariable("publicacionId")Long publicacionId) {
+    	
+    	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
+    	Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
+    	
+    	if(!tiendaOptional.isPresent() || !publicacionOptional.isPresent()) {
+    		return new DTORtaPublicacion("no existe");
+    	}
+    	
+    	Publicacion publicacion = publicacionOptional.get();
+    	
+    	if(publicacion.isActiva()) {
+    		return new DTORtaPublicacion("existe", publicacion.getNombre(), publicacion.getPrecio());
+    	} else {
+    		return new DTORtaPublicacion("publicacion inactiva");
+    	}
+    }
+    
+    
     @Transactional
     @DeleteMapping("publicaciones/{publicacionId}")
     public @ResponseBody ResponseEntity<Object> deletePublicacion(@PathVariable("publicacionId")Long publicacionId){
@@ -114,5 +141,53 @@ public class TiendaController {
 
         publicacion.setEstado(false);
         return ResponseEntity.status(HttpStatus.OK).body("Publicacion pausada");
+    }  
+    
+    @GetMapping("/tiendas/{tiendaId}/datospublicaciones")
+	public DTODatosVenta obtenerDatosVenta(@PathVariable("tiendaId") Long tiendaId, 
+			@RequestBody List<Long> listaPublicacionesIds) {
+    	
+    	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
+    	Tienda tienda = tiendaOptional.get();
+    	
+    	List<Publicacion> publicaciones = tienda.getPublicaciones();
+    	List<Long> productosBaseIds = new ArrayList<>();
+    	
+    	Iterator<Publicacion> iteradorPublicaciones = publicaciones.iterator();
+    	while(iteradorPublicaciones.hasNext()) {
+    		Publicacion publicacion = iteradorPublicaciones.next();
+    		
+    		for(int i=0; i<listaPublicacionesIds.size(); i++) {
+    			
+    			if(publicacion.getId().equals(listaPublicacionesIds.get(i))) {
+    				
+    				productosBaseIds.add(publicacion.getProductoFinal().getProductoBase());
+    			}
+    		}
+    	}    	
+    	
+    	//DTODatosVenta datosVenta = proxy.buscarTiempoDeFabricacion(productosBaseIds);
+    	DTODatosVenta datosVenta = new DTODatosVenta("7 dias");
+    	
+    	Vendedor vendedor = tienda.getVendedor();    	
+    	
+    	List<String> metodosDePago = new ArrayList<>();
+    	
+    	List<MetodoPago> formasDePago = vendedor.getMetodoPago();
+    	
+    	Iterator<MetodoPago> iteradorFormasDePago = formasDePago.iterator();
+    	while(iteradorFormasDePago.hasNext()) {
+    		
+    		MetodoPago metodo = iteradorFormasDePago.next();
+    		if(metodo.getActivo()) {
+    			metodosDePago.add(metodo.getMetodopago());
+    		}
+    	}
+    	
+    	datosVenta.setMetodosDePago(metodosDePago);
+    	datosVenta.setNombreCompletoVendedor(vendedor.getNombre() + " " + vendedor.getApellido());
+    	
+    	return datosVenta;
+    	
     }
 }

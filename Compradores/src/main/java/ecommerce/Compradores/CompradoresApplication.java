@@ -1,12 +1,5 @@
-package ecommerce.Vendedores;
+package ecommerce.Compradores;
 
-import ecommerce.Vendedores.app.RepoVendedor;
-import ecommerce.Vendedores.models.MetodoPago;
-import ecommerce.Vendedores.models.Personalizacion;
-import ecommerce.Vendedores.models.ProductoFinal;
-import ecommerce.Vendedores.models.Publicacion;
-import ecommerce.Vendedores.models.Tienda;
-import ecommerce.Vendedores.models.Vendedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,20 +9,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 
+import ecommerce.Compradores.models.CarritoDeCompra;
+import ecommerce.Compradores.models.Comprador;
+import ecommerce.Compradores.models.Item;
+
 @SpringBootApplication
 @EnableFeignClients
-public class VendedoresApplication {
+public class CompradoresApplication {
 
 	@Autowired
 	RepositoryRestConfiguration config;
 
 	public static void main(String[] args) {
-		SpringApplication.run(VendedoresApplication.class, args);
+		SpringApplication.run(CompradoresApplication.class, args);
 	}
 
 	@Bean
-	public CommandLineRunner init(RepoVendedor repoVendedor){
-		config.exposeIdsFor(Vendedor.class, ProductoFinal.class, Personalizacion.class, Tienda.class, Publicacion.class, MetodoPago.class);
+	public CommandLineRunner init(){
+		config.exposeIdsFor(Comprador.class, CarritoDeCompra.class, Item.class);
 
 		return (algo)->{
 //			repoVendedor.save(new Vendedor("Santiago", "Barrios"));

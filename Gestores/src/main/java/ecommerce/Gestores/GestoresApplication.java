@@ -3,6 +3,7 @@ package ecommerce.Gestores;
 import ecommerce.Gestores.app.RepoGestor;
 import ecommerce.Gestores.app.RepoProductoBase;
 import ecommerce.Gestores.models.Gestor;
+import ecommerce.Gestores.models.PosiblePersonalizacion;
 import ecommerce.Gestores.models.ProductoBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +25,7 @@ public class GestoresApplication {
 	@Bean
 	public CommandLineRunner init(RepoGestor repoGestor, RepoProductoBase repoProductoBase){
 
-		config.exposeIdsFor(Gestor.class, ProductoBase.class);
+		config.exposeIdsFor(Gestor.class, ProductoBase.class, PosiblePersonalizacion.class);
 
 		return (cosas) -> {
 //			Gestor gestor1 = new Gestor("Alejandro", "Fantino");

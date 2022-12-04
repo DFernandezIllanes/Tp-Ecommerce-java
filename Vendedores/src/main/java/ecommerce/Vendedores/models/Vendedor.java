@@ -1,5 +1,6 @@
 package ecommerce.Vendedores.models;
 
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -13,6 +13,7 @@ import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import javax.ws.rs.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -48,7 +49,7 @@ public class VendedorController {
         }
         repoVendedor.save(newVendedor);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Vendedor Creado");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Vendedor Creado, id: " + newVendedor.getId());
     }
 
 
@@ -102,7 +103,7 @@ public class VendedorController {
                     ProductoFinal newproductoFinal = new ProductoFinal(vendedor, productoBaseId, productoFinal.getPrecio());
                     repoProductoFinal.save(newproductoFinal);
 
-                    return ResponseEntity.status(HttpStatus.OK).body("Producto final creado con exito!");
+                    return ResponseEntity.status(HttpStatus.OK).body("Producto final creado con exito!, id: " + newproductoFinal.getId());
                 }
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto base");
             } else {
@@ -150,7 +151,7 @@ public class VendedorController {
                     Personalizacion newPersonalizacion = new Personalizacion(personalizacion.getPrecio(), res.getAreaPersonalizacion() + "-" + res.getTipoPersonalizacion(), personalizacion.getContenido(), personalizacion.getNombre(), productoFinal);
                     repoPersonalizacion.save(newPersonalizacion);
 
-                    return ResponseEntity.status(HttpStatus.OK).body("Personalizacion creada con exito");
+                    return ResponseEntity.status(HttpStatus.OK).body("Personalizacion creada con exito, id: " + newPersonalizacion.getId());
                 }
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto base");
             } else {
@@ -204,6 +205,7 @@ public class VendedorController {
 
         Vendedor vendedor = vendedorOptional.get();
 
+        List<Long> metodosIds = new ArrayList<>();
         ArrayList<String> medioPagoErroneos = new ArrayList<>(metodoPago.size());
         Boolean todosOk = true;
         String finalMessage = "Estos medio de pago ya se encuentran [";
@@ -228,8 +230,10 @@ public class VendedorController {
             DTOMedioPago posMetodoPago = metodoPago.get(i);
             MetodoPago newMetodoPago = new MetodoPago(posMetodoPago.getMedioPago(), vendedor);
             repoMetodoPago.save(newMetodoPago);
+            
+            metodosIds.add(newMetodoPago.getId());
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Medios de pago agregados");
+        return ResponseEntity.status(HttpStatus.OK).body("Medios de pago agregados, id: " + metodosIds.toString());
     }
 
     @Transactional

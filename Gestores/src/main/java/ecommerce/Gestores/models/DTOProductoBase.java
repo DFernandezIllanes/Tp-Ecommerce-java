@@ -9,6 +9,6 @@ public class DTOProductoBase {
     String nombre;
     String descripcion;
     Double precio;
-    String tiempoDeFabricacion;
+    String tiempoDeFabricacionEnDias;
     Boolean activo;
 }
