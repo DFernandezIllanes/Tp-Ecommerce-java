@@ -1,6 +1,7 @@
 package ecommerce.Vendedores.app;
 
 import ecommerce.Vendedores.models.*;
+import lombok.Getter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import javax.ws.rs.Path;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RepositoryRestController
@@ -32,6 +35,9 @@ public class VendedorController {
     RepoPersonalizacion repoPersonalizacion;
     @Autowired
     GestorProxy proxy;
+
+    @Autowired
+    RepoMetodoPago repoMetodoPago;
 
     @PostMapping("/vendedores/vendedor")
     public @ResponseBody ResponseEntity<Object> crearVendedor(@RequestBody DTOVendedor vendedor) {
@@ -183,5 +189,77 @@ public class VendedorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el producto final");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto final");
+    }
+
+    @PostMapping("/vendedores/{vendedorId}/metodoPago")
+    public @ResponseBody ResponseEntity<Object> agregarMediosDePago(
+            @PathVariable("vendedorId")Long vendedorId,
+            @RequestBody ArrayList<DTOMedioPago> metodoPago
+            ){
+        Optional<Vendedor> vendedorOptional = repoVendedor.findById(vendedorId);
+
+        if(!vendedorOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el vendedor");
+        }
+
+        Vendedor vendedor = vendedorOptional.get();
+
+        ArrayList<String> medioPagoErroneos = new ArrayList<>(metodoPago.size());
+        Boolean todosOk = true;
+        String finalMessage = "Estos medio de pago ya se encuentran [";
+
+        for (int i = 0; i < metodoPago.size(); i++){
+            DTOMedioPago newMedioPago = metodoPago.get(i);
+
+            MetodoPago unMetodoPago = repoMetodoPago.findByMetodopago(newMedioPago.getMedioPago());
+            if(!(unMetodoPago == null)){
+                todosOk = false;
+                medioPagoErroneos.add(unMetodoPago.getMetodopago());
+            }
+        }
+        if(!todosOk){
+            for (int i = 0; i < medioPagoErroneos.size(); i++) {
+                finalMessage += medioPagoErroneos.get(i) + " ";
+            }
+            finalMessage += "]";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(finalMessage);
+        }
+        for (int i = 0; i < metodoPago.size(); i++) {
+            DTOMedioPago posMetodoPago = metodoPago.get(i);
+            MetodoPago newMetodoPago = new MetodoPago(posMetodoPago.getMedioPago(), vendedor);
+            repoMetodoPago.save(newMetodoPago);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Medios de pago agregados");
+    }
+
+    @Transactional
+    @DeleteMapping("/vendedores/{vendedorId}/metodoPago/{metodoPagoId}")
+    public @ResponseBody ResponseEntity<Object> eliminarMetodoPago(
+            @PathVariable("vendedorId") Long vendedorId,
+            @PathVariable("metodoPagoId") Long metodoPagoId
+    ){
+        Optional<Vendedor> vendedorOptional = repoVendedor.findById(vendedorId);
+        Optional<MetodoPago> metodoPagoOptional = repoMetodoPago.findById(metodoPagoId);
+
+        if(!vendedorOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el vendedor");
+        }
+
+        if(!metodoPagoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el metodo de pago");
+        }
+
+        MetodoPago metodoPago = metodoPagoOptional.get();
+        Vendedor vendedor = vendedorOptional.get();
+
+        if(metodoPago.getVendedor().getId().equals(vendedorId)){
+            if(metodoPago.isActivo()){
+                metodoPago.setActivo(false);
+                return ResponseEntity.status(HttpStatus.OK).body("Metodo de pago borrado");
+            }
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el metodo de pago");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el metodo de pago");
+
     }
 }

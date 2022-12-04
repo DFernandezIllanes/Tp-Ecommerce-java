@@ -13,4 +13,6 @@ public interface RepoMetodoPago extends JpaRepository<MetodoPago, Long> {
     @Override
     @RestResource(exported = false)
     void delete(MetodoPago metodoPago);
+
+    MetodoPago findByMetodopago(String metodoPago);
 }

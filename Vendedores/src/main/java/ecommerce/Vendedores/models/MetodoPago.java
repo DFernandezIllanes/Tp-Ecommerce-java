@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 public class MetodoPago {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
