@@ -2,6 +2,8 @@ package ecommerce.Vendedores.app;
 
 import ecommerce.Vendedores.models.*;
 
+import ecommerce.Vendedores.models.dtos.DTORtaGestor;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.rmi.CORBA.Tie;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.awt.print.Pageable;
@@ -32,7 +35,7 @@ public class TiendaController {
 
     @Autowired
     RepoPersonalizacion repoPersonalizacion;
-    
+
     @Autowired
     GestorProxy proxy;
 
@@ -69,6 +72,9 @@ public class TiendaController {
                     if (!productoFinal.getVendedor().getId().equals(vendedor.getId())) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto final no pertenece al vendedor asociado a esta tienda");
                     }
+                    if (!personalizacion.isActivo()) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La personalizacion esta eliminada");
+                    }
                     if (personalizacion.getProductoFinal().getId().equals(productoFinal.getId())) {
                         Publicacion newPublicacion = new Publicacion(tienda, productoFinal, personalizacion.getNombre(), productoFinal.getPrecio() + personalizacion.getPrecio());
                         repoPublicacion.save(newPublicacion);
@@ -78,50 +84,82 @@ public class TiendaController {
                 }
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la personalizacion");
             } else {
-                if (productoFinal.getVendedor().getId().equals(vendedor.getId())){
+                if (productoFinal.getVendedor().getId().equals(vendedor.getId())) {
                     Publicacion newPublicacion2 = new Publicacion(tienda, productoFinal, publicacion.getNombre(), productoFinal.getPrecio());
                     repoPublicacion.save(newPublicacion2);
                     return ResponseEntity.status(HttpStatus.OK).body("Publicacion creada con exito!");
                 }
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("El producto no pertenece al vendedor asociado a esta cuenta");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El producto no pertenece al vendedor asociado a esta tienda");
             }
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto final");
         //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto final no pertenece al vendedor asociado a esta tienda");
     }
-    
+
     @GetMapping("/tiendas/{tiendaId}/publicaciones/{publicacionId}")
-	public DTORtaPublicacion publicacion(@PathVariable("tiendaId")Long tiendaId, 
+	public DTORtaPublicacion publicacion(@PathVariable("tiendaId")Long tiendaId,
 			@PathVariable("publicacionId")Long publicacionId) {
-    	
+
     	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
     	Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
-    	
+
     	if(!tiendaOptional.isPresent() || !publicacionOptional.isPresent()) {
     		return new DTORtaPublicacion("no existe");
     	}
-    	
+
     	Publicacion publicacion = publicacionOptional.get();
-    	
+
     	if(publicacion.isActiva()) {
     		return new DTORtaPublicacion("existe", publicacion.getNombre(), publicacion.getPrecio());
     	} else {
     		return new DTORtaPublicacion("publicacion inactiva");
     	}
     }
-    
-    
-    @Transactional
-    @DeleteMapping("publicaciones/{publicacionId}")
-    public @ResponseBody ResponseEntity<Object> deletePublicacion(@PathVariable("publicacionId")Long publicacionId){
-        Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
-        Publicacion publicacion = publicacionOptional.get();
 
-        if (!publicacionOptional.isPresent() || !publicacion.isActiva()){
+
+    @Transactional
+    @PatchMapping("/tienda/{tiendaId}/publicacion/{publicacionId}")
+    public @ResponseBody ResponseEntity<Object> pausarPublicacion(@PathVariable("tiendaId") Long tiendaId, @PathVariable("publicacionId") Long publicacionId) {
+        Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
+        Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
+
+        if (!publicacionOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la publicacion");
         }
 
-        if(publicacion.getEstado()){
+        if (!tiendaOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la tienda");
+        }
+        Publicacion publicacion = publicacionOptional.get();
+        Tienda tienda = tiendaOptional.get();
+
+        if(!publicacion.getTienda().getId().equals(tiendaId)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La publicacion no esta asociada a esa tienda");
+        }
+
+        if (publicacion.isActiva()) {
+            if (publicacion.isPublicada()) {
+                publicacion.setEstado(false);
+                return ResponseEntity.status(HttpStatus.OK).body("Publicacion pausada");
+            }else{
+                publicacion.setEstado(true);
+                return ResponseEntity.status(HttpStatus.OK).body("Publicacion activa");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la publicacion");
+    }
+
+    @Transactional
+    @DeleteMapping("/tienda/{tiendaId}/publicacion/{publicacionId}")
+    public @ResponseBody ResponseEntity<Object> deletePublicacion(@PathVariable("publicacionId") Long publicacionId) {
+        Optional<Publicacion> publicacionOptional = repoPublicacion.findById(publicacionId);
+        Publicacion publicacion = publicacionOptional.get();
+
+        if (!publicacionOptional.isPresent() || !publicacion.isActiva()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la publicacion");
+        }
+
+        if (publicacion.getEstado()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede eliminar la publicacion porque no esta pausada");
         }
 
@@ -141,53 +179,46 @@ public class TiendaController {
 
         publicacion.setEstado(false);
         return ResponseEntity.status(HttpStatus.OK).body("Publicacion pausada");
-    }  
-    
-    @GetMapping("/tiendas/{tiendaId}/datospublicaciones")
-	public DTODatosVenta obtenerDatosVenta(@PathVariable("tiendaId") Long tiendaId, 
+    }
+
+    @Retry(name = "default", fallbackMethod = "noDisponible")
+    @PostMapping("/tiendas/{tiendaId}/datospublicaciones")
+	public DTODatosVenta obtenerDatosVenta(@PathVariable("tiendaId") Long tiendaId,
 			@RequestBody List<Long> listaPublicacionesIds) {
-    	
+
     	Optional<Tienda> tiendaOptional = repoTienda.findById(tiendaId);
     	Tienda tienda = tiendaOptional.get();
-    	
+
     	List<Publicacion> publicaciones = tienda.getPublicaciones();
-    	List<Long> productosBaseIds = new ArrayList<>();
-    	
+    	ArrayList<Long> productosBaseIds = new ArrayList<>();
+
     	Iterator<Publicacion> iteradorPublicaciones = publicaciones.iterator();
     	while(iteradorPublicaciones.hasNext()) {
     		Publicacion publicacion = iteradorPublicaciones.next();
-    		
+
     		for(int i=0; i<listaPublicacionesIds.size(); i++) {
-    			
+
     			if(publicacion.getId().equals(listaPublicacionesIds.get(i))) {
-    				
+
     				productosBaseIds.add(publicacion.getProductoFinal().getProductoBase());
     			}
     		}
-    	}    	
-    	
-    	//DTODatosVenta datosVenta = proxy.buscarTiempoDeFabricacion(productosBaseIds);
-    	DTODatosVenta datosVenta = new DTODatosVenta("7 dias");
-    	
-    	Vendedor vendedor = tienda.getVendedor();    	
-    	
-    	List<String> metodosDePago = new ArrayList<>();
-    	
-    	List<MetodoPago> formasDePago = vendedor.getMetodoPago();
-    	
-    	Iterator<MetodoPago> iteradorFormasDePago = formasDePago.iterator();
-    	while(iteradorFormasDePago.hasNext()) {
-    		
-    		MetodoPago metodo = iteradorFormasDePago.next();
-    		if(metodo.getActivo()) {
-    			metodosDePago.add(metodo.getMetodopago());
-    		}
     	}
-    	
-    	datosVenta.setMetodosDePago(metodosDePago);
-    	datosVenta.setNombreCompletoVendedor(vendedor.getNombre() + " " + vendedor.getApellido());
-    	
+
+    	DTORtaGestor rtaGestor = proxy.buscarTiempoDeFabricacion(productosBaseIds);
+
+        Vendedor vendedor = tienda.getVendedor();
+
+        DTODatosVenta datosVenta = new DTODatosVenta(vendedor.getNombre() + " " + vendedor.getApellido(),7);
+
     	return datosVenta;
-    	
+    }
+
+    public @ResponseBody ResponseEntity<Object> noDisponible(Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Estamos en mantenimiento, por favor intente mas tarde");
+    }
+
+    public @ResponseBody ResponseEntity<Object> noDisponible(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Estamos en mantenimiento, por favor intente mas tarde");
     }
 }

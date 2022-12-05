@@ -1,4 +1,4 @@
-package ecommerce.Gestores.models;
+package ecommerce.Gestores.models.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,6 @@ public class DTOProductoBase {
     String nombre;
     String descripcion;
     Double precio;
-    String tiempoDeFabricacionEnDias;
+    Integer tiempoDeFabricacionEnDias;
     Boolean activo;
 }

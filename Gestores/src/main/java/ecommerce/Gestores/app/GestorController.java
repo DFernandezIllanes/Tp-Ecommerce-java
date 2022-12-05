@@ -1,11 +1,10 @@
 package ecommerce.Gestores.app;
-
-import ecommerce.Gestores.models.DTODatosVenta;
-import ecommerce.Gestores.models.DTOGestor;
-import ecommerce.Gestores.models.DTOProductoBase;
+import ecommerce.Gestores.models.dtos.DTOGestor;
+import ecommerce.Gestores.models.dtos.DTOProductoBase;
 import ecommerce.Gestores.models.Gestor;
 import ecommerce.Gestores.models.ProductoBase;
 
+import ecommerce.Gestores.models.dtos.DTORtaGestor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +24,7 @@ public class GestorController {
     @Autowired
     RepoProductoBase repoProductoBase;
 
-    @PostMapping("/gestores/gestor")
+    @PostMapping("/gestores/newgestor")
     public @ResponseBody ResponseEntity<Object> crearGestor(@RequestBody DTOGestor gestor) {
         Gestor newGestor = new Gestor(gestor.getNombre(), gestor.getApellido());
         if (newGestor.getNombre().isEmpty() || newGestor.getApellido().isEmpty()) {
@@ -56,14 +54,14 @@ public class GestorController {
             for (int i = 0; i < productos.size(); i++) {
                 DTOProductoBase newProdBase = (DTOProductoBase) productos.get(i);
 
-                if(newProdBase.getNombre().isEmpty() || newProdBase.getPrecio().toString().isEmpty() || newProdBase.getTiempoDeFabricacionEnDias().isEmpty()){
+                if(newProdBase.getNombre().isEmpty() || newProdBase.getPrecio().toString().isEmpty() || newProdBase.getTiempoDeFabricacionEnDias() == null){
                     todosOk = false;
-                    if(newProdBase.getNombre().isEmpty()){
+                    if (newProdBase.getNombre().isEmpty()) {
                         productosErroneos.add("Indice arr: " + i + ",");
-                    }else{
+                    } else {
                         productosErroneos.add(newProdBase.getNombre());
                     }
-                }else{
+                } else {
                     ProductoBase unProducto = repoProductoBase.findByNombreAndGestorId(newProdBase.getNombre(), gestorId);
 
                     if (!(unProducto == null) && unProducto.getNombre() != null && unProducto.getGestor().getId() == gestorId) {
@@ -102,24 +100,23 @@ public class GestorController {
 
         if (!gestorOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el gestor");
-        } else {
-            Gestor gestor = gestorOptional.get();
-
-            ProductoBase unProducto = repoProductoBase.findById(productoId).get();
-
-            if (unProducto == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("producto no encontrado");
-            }
-
-            unProducto.setNombre(actualizacion.getNombre());
-            unProducto.setDescripcion(actualizacion.getDescripcion());
-            unProducto.setPrecio(actualizacion.getPrecio());
-            unProducto.setTiempoDeFabricacion(actualizacion.getTiempoDeFabricacionEnDias());
-            unProducto.setActivo(actualizacion.getActivo());
-
-//            repoProductoBase.save(unProducto);
-            return ResponseEntity.status(HttpStatus.OK).body("El producto " + unProducto.getNombre() + " fue actualizado" );
         }
+        Gestor gestor = gestorOptional.get();
+
+        Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(productoId);
+
+        if (!productoBaseOptional.isPresent() || !productoBaseOptional.get().isActivo()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("producto no encontrado");
+        }
+
+        ProductoBase unProducto = productoBaseOptional.get();
+        unProducto.setNombre(actualizacion.getNombre());
+        unProducto.setDescripcion(actualizacion.getDescripcion());
+        unProducto.setPrecio(actualizacion.getPrecio());
+        unProducto.setTiempoDeFabricacion(actualizacion.getTiempoDeFabricacionEnDias());
+
+        return ResponseEntity.status(HttpStatus.OK).body("El producto " + unProducto.getNombre() + " fue actualizado, id: " + unProducto.getId());
+
     }
 
     @Transactional
@@ -132,39 +129,31 @@ public class GestorController {
             ProductoBase productoBase = productoBaseOptional.get();
             if (productoBase.isActivo()) {
                 productoBase.setActivo(false);
-                return ResponseEntity.status(HttpStatus.OK).body("Producto base borrado");
+                return ResponseEntity.status(HttpStatus.OK).body("Producto base " + productoBase.getNombre() + " fue borrado");
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto base");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el gestor");
     }
-    
-    @GetMapping("gestores/productos/")
-    public DTODatosVenta buscarTiempoDeFabricacion(@RequestBody List<Long>productosBaseIds) {
-    	
+
+    @PostMapping("/gestores/productos")
+    public DTORtaGestor buscarTiempoDeFabricacion(@RequestBody List<Long>productosBaseIds) {
+
     	Integer mayorTiempo = 0;
-    	
-    	List<ProductoBase> listaProductosBase = repoProductoBase.findAll();
-    	Iterator<ProductoBase> iteradorProductosBase = listaProductosBase.iterator();
-    	while(iteradorProductosBase.hasNext()) {
-    		ProductoBase productoBase = iteradorProductosBase.next();
-    		
-    		for(int i=0; i<productosBaseIds.size(); i++) {
-    			if(productoBase.getId().equals(productosBaseIds.get(i))) {
-    				String tiempoDeFabricacionEnDias = productoBase.getTiempoDeFabricacion();
-    				Integer tiempoEnDias = Integer.valueOf(tiempoDeFabricacionEnDias);
-    				
-    				if(tiempoEnDias > mayorTiempo) {
-    					mayorTiempo = tiempoEnDias;
-    				}
-    			}
-    		}
-    		
-    	}
-    	
-    	String tiempoDeFabricacion = mayorTiempo.toString() + " dias";
-    	
-    	return new DTODatosVenta(tiempoDeFabricacion);
+
+        for (int i = 0; i < productosBaseIds.size(); i++) {
+            Long idProd = productosBaseIds.get(i);
+            Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(idProd);
+            if(productoBaseOptional.isPresent()){
+                ProductoBase productoBase = productoBaseOptional.get();
+                if (productoBase.getTiempoDeFabricacion() > mayorTiempo){
+                    mayorTiempo = productoBase.getTiempoDeFabricacion();
+                }
+            }
+        }
+
+        System.out.println("Major tiempo:" + mayorTiempo);
+    	return new DTORtaGestor(mayorTiempo);
     }
 
 }

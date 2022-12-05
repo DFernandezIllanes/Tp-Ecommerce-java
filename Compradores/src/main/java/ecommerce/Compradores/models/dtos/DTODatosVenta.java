@@ -14,33 +14,23 @@ public class DTODatosVenta {
 	
 	private String nombreCompletoVendedor;
 	
-	private List<String> metodosDePago;
-	
 	private String tiempoEstimadoDeEntrega;
 	
 	//---------------------------- CONSTRUCTORES ---------------------------------------------
 
 	public DTODatosVenta() {
 		super();
-		this.metodosDePago = new ArrayList<>();
 	}
 	
-	public DTODatosVenta(String tiempoEstimadoDeEntrega) {
-		super();
-		this.tiempoEstimadoDeEntrega = tiempoEstimadoDeEntrega;
-		this.metodosDePago = new ArrayList<>();
-	}
+//	public DTODatosVenta(String tiempoEstimadoDeEntrega) {
+//		super();
+//		this.tiempoEstimadoDeEntrega = tiempoEstimadoDeEntrega;
+//	}
+//
 	
-	public DTODatosVenta(String nombreCompletoVendedor, List<String> metodosDePago) {
-		super();
-		this.nombreCompletoVendedor = nombreCompletoVendedor;
-		this.metodosDePago = metodosDePago;
-	}
-	
-	public DTODatosVenta(String nombreCompletoVendedor, List<String> metodosDePago, String tiempoEstimadoDeEntrega) {
+	public DTODatosVenta(String nombreCompletoVendedor, String tiempoEstimadoDeEntrega) {
 		super();
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
-		this.metodosDePago = metodosDePago;
 		this.tiempoEstimadoDeEntrega = tiempoEstimadoDeEntrega;
 	}
 }

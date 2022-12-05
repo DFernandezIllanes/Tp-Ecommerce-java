@@ -14,9 +14,9 @@ public interface RepoPosiblePersonalizacion extends JpaRepository<PosiblePersona
     @RestResource(exported = false)
     void delete(PosiblePersonalizacion posiblePersonalizacion);
 
-    PosiblePersonalizacion findByAreaDePersonalizacion(String areaDePersonalizacion);
+    PosiblePersonalizacion findByAreaDePersonalizacionAndProductoBaseId(String areaDePersonalizacion, Long productoBaseId);
 
     PosiblePersonalizacion findByTipoDePersonalizacion(String tipoDePersonalizacion);
 
-    PosiblePersonalizacion findByProductoBaseId(Long productoBaseId);
+    PosiblePersonalizacion findByProductoBaseIdAndAreaDePersonalizacion(Long productoBaseId, String areaPersonalizacion);
 }

@@ -1,6 +1,6 @@
 package ecommerce.Gestores.app;
 
-import ecommerce.Gestores.models.DTOPosiblePersonalizacion;
+import ecommerce.Gestores.models.dtos.DTOPosiblePersonalizacion;
 import ecommerce.Gestores.models.PosiblePersonalizacion;
 import ecommerce.Gestores.models.ProductoBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +24,26 @@ public class ProductoBaseController {
     public @ResponseBody ResponseEntity<Object> crearPosiblePersonalizacion(
             @PathVariable("productoBaseId") Long productoBaseId,
             @RequestBody DTOPosiblePersonalizacion personalizacion
-    ){
+    ) {
         Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(productoBaseId);
-        Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = Optional.ofNullable(repoPosiblePersonalizacion.findByAreaDePersonalizacion(personalizacion.getAreaDePersonalizacion()));
+        Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = Optional.ofNullable(repoPosiblePersonalizacion.findByAreaDePersonalizacionAndProductoBaseId(personalizacion.getAreaDePersonalizacion(), productoBaseId));
 
-        if(!productoBaseOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el producto");
-        } else {
-            ProductoBase productoBase = productoBaseOptional.get();
-
-            if(posiblePersonalizacionOptional.isPresent() && posiblePersonalizacionOptional.get().getProductoBase().getId() == productoBaseId) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el área de personalización");
-            } else {
-                PosiblePersonalizacion posiblePersonalizacion = new PosiblePersonalizacion(personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase);
-                repoPosiblePersonalizacion.save(posiblePersonalizacion);
-                return ResponseEntity.status(HttpStatus.OK).body("Posible personalización añadida, id: " + posiblePersonalizacion.getId());
-            }
+        if (!productoBaseOptional.isPresent() || !productoBaseOptional.get().isActivo()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe el producto base");
         }
+        ProductoBase productoBase = productoBaseOptional.get();
+        if (posiblePersonalizacionOptional.isPresent() && posiblePersonalizacionOptional.get().getProductoBase().getId() == productoBaseId) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el área de personalización");
+        }
+        if (personalizacion.getAreaDePersonalizacion().isEmpty() || personalizacion.getTipoDePersonalizacion().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Faltan datos de la personalizacion");
+        }
+
+        PosiblePersonalizacion posiblePersonalizacion = new PosiblePersonalizacion(personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase);
+        repoPosiblePersonalizacion.save(posiblePersonalizacion);
+        return ResponseEntity.status(HttpStatus.OK).body("Posible personalización añadida");
+
+
     }
 
     @Transactional
@@ -48,17 +51,19 @@ public class ProductoBaseController {
     public @ResponseBody ResponseEntity<Object> deletePosiblePersonalizacion(
             @PathVariable("productoBaseId") Long productoBaseId,
             @PathVariable("personalizacionId") Long personalizacionId
-    ){
+    ) {
         Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = repoPosiblePersonalizacion.findById(personalizacionId);
         Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(productoBaseId);
 
-        if(posiblePersonalizacionOptional.isPresent() && productoBaseOptional.isPresent()){
-            PosiblePersonalizacion posiblePersonalizacion = posiblePersonalizacionOptional.get();
-            if(posiblePersonalizacion.isActivo()){
-                posiblePersonalizacion.setActivo(false);
-                return ResponseEntity.status(HttpStatus.OK).body("Posible Personalizacion borrada");
+        if(productoBaseOptional.isPresent() || productoBaseOptional.get().isActivo()){
+            if (posiblePersonalizacionOptional.isPresent()) {
+                PosiblePersonalizacion posiblePersonalizacion = posiblePersonalizacionOptional.get();
+                if (posiblePersonalizacion.isActivo() && posiblePersonalizacion.getProductoBase().getId().equals(productoBaseId)) {
+                    posiblePersonalizacion.setActivo(false);
+                    return ResponseEntity.status(HttpStatus.OK).body("Posible Personalizacion borrada");
+                }
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la personalizacion");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la personalizacion");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la personalizacion o el producto base");
     }
@@ -69,21 +74,24 @@ public class ProductoBaseController {
             @PathVariable("productoBaseId") Long productoBaseId,
             @PathVariable("personalizacionId") Long personalizacionId,
             @RequestBody DTOPosiblePersonalizacion actualizacionPP
-    ){
+    ) {
         Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = repoPosiblePersonalizacion.findById(personalizacionId);
         Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(productoBaseId);
 
-        if(posiblePersonalizacionOptional.isPresent()){
+        if(!productoBaseOptional.isPresent() || !productoBaseOptional.get().isActivo()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el producto base id: "+ productoBaseId);
+        }
+
+        if (posiblePersonalizacionOptional.isPresent() && posiblePersonalizacionOptional.get().isActivo()) {
             PosiblePersonalizacion posiblePersonalizacion = posiblePersonalizacionOptional.get();
 
-            if(posiblePersonalizacion == null && !posiblePersonalizacion.isActivo()){
+            if (posiblePersonalizacion == null && !posiblePersonalizacion.isActivo()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Personalizacion no encontrada");
             }
 
             posiblePersonalizacion.setAreaDePersonalizacion(actualizacionPP.getAreaDePersonalizacion());
             posiblePersonalizacion.setTipoDePersonalizacion(actualizacionPP.getTipoDePersonalizacion());
-//            repoPosiblePersonalizacion.save(posiblePersonalizacion);
-            return ResponseEntity.status(HttpStatus.OK).body("Personalizacion realizada con exito");
+            return ResponseEntity.status(HttpStatus.OK).body("Personalizacion id: " + posiblePersonalizacion.getId() + " actualizada con exito");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la personalizacion");
     }

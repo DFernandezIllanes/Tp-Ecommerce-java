@@ -5,17 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import javax.persistence.JoinColumn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,18 +43,17 @@ public class Compra {
 	@OneToMany(mappedBy = "compra")
 	private List<Item> items;	
 	
-	@ElementCollection
-	@CollectionTable(name = "compra_metodoDePago", joinColumns = @JoinColumn(name = "compra_id"))
+//	@ElementCollection
+//	@CollectionTable(name = "compra_metodoDePago", joinColumns = @JoinColumn(name = "compra_id"))
 	@Column(name = "metodoDePago")
-	//private Set<String> metodosDePago;
-	private List<String> metodosDePago;
+	private String metodoDePago;
 	
 	@Column(name = "fecha")
 	private LocalDateTime fecha;
 	
 	
 	@Column(name = "tiempo_de_entrega_aproximado")
-	private String tiempoDeEntregaAproximado;	
+	private String tiempoDeEntregaAproximado;
 	
 	//------------------------------ CONSTRUCTORES -----------------------------------------------------
 	
@@ -67,45 +61,45 @@ public class Compra {
 		super();
 		this.items = new ArrayList<>();
 		//this.metodosDePago = new LinkedHashSet<>();
-		this.metodosDePago = new ArrayList<>();
+//		this.metodosDePago = new ArrayList<>();
 		this.fecha = LocalDateTime.now();
 	}
 	
 	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor) {
+			String nombreCompletoVendedor, String metodoDePago) {
 		super();
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
 		this.tiendaId = tiendaId;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = new ArrayList<>();
-		this.metodosDePago = new ArrayList<>();
+		this.metodoDePago = metodoDePago;
 		this.fecha = LocalDateTime.now();
 	}
 	
-	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId) {
+	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId, String metodoDePago) {
 		super();
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
 		this.tiendaId = tiendaId;
 		this.items = new ArrayList<>();
-		this.metodosDePago = new ArrayList<>();
+		this.metodoDePago = metodoDePago;
 		this.fecha = LocalDateTime.now();		
 	}
 	
 	public Compra(Long compradorId, String nombreCompletoComprador, Long vendedorId,
-			String nombreCompletoVendedor, List<Item> items) {
+			String nombreCompletoVendedor, List<Item> items, String metodoDePago) {
 		super();
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = items;
-		this.metodosDePago = new ArrayList<>();
+		this.metodoDePago = metodoDePago;
 		this.fecha = LocalDateTime.now();
 	}
 	
 	public Compra(Long id, Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<Item> items) {
+			String nombreCompletoVendedor, List<Item> items, String metodoDePago) {
 		super();
 		this.id = id;
 		this.compradorId = compradorId;
@@ -113,12 +107,12 @@ public class Compra {
 		this.tiendaId = tiendaId;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = items;
-		this.metodosDePago = new ArrayList<>();
+		this.metodoDePago = metodoDePago;
 		this.fecha = LocalDateTime.now();
 	}
 	
 	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<Item> items, List<String> metodosDePago,
+			String nombreCompletoVendedor, List<Item> items, String metodoDePago,
 			String tiempoDeEntregaAproximado) {
 		super();
 		this.compradorId = compradorId;
@@ -126,13 +120,13 @@ public class Compra {
 		this.tiendaId = tiendaId;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = items;
-		this.metodosDePago = metodosDePago;
+		this.metodoDePago = metodoDePago;
 		this.fecha = LocalDateTime.now();
 		this.tiempoDeEntregaAproximado = tiempoDeEntregaAproximado;
 	}
 
 	public Compra(Long id, Long compradorId, String nombreCompletoComprador, Long tiendaId,
-			String nombreCompletoVendedor, List<Item> items, List<String> metodosDePago, LocalDateTime fecha,
+			String nombreCompletoVendedor, List<Item> items, String metodoDePago, LocalDateTime fecha,
 			String tiempoDeEntregaAproximado) {
 		super();
 		this.id = id;
@@ -141,19 +135,19 @@ public class Compra {
 		this.tiendaId = tiendaId;
 		this.nombreCompletoVendedor = nombreCompletoVendedor;
 		this.items = items;
-		this.metodosDePago = metodosDePago;
+		this.metodoDePago = metodoDePago;
 		this.fecha = fecha;
 		this.tiempoDeEntregaAproximado = tiempoDeEntregaAproximado;
 	}	
 	
-	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId, List<Item> items ) {
+	public Compra(Long compradorId, String nombreCompletoComprador, Long tiendaId,String metodoDePag, List<Item> items ) {
 		super();
 		this.compradorId = compradorId;
 		this.nombreCompletoComprador = nombreCompletoComprador;
 		this.tiendaId = tiendaId;
 		this.items = items;
 		this.fecha = LocalDateTime.now();
-		this.metodosDePago = new ArrayList<>();
+		this.metodoDePago = metodoDePago;
 	}
 	
 	//------------------------------ MÉTODOS -----------------------------------------------------

@@ -15,5 +15,5 @@ public interface RepoPersonalizacion extends JpaRepository<Personalizacion, Long
     @RestResource(exported = false)
     void delete(Personalizacion personalizacion);
 
-    Personalizacion findByNombre(String nombre);
+    Personalizacion findByNombreAndProductoFinalId(String nombre, Long prodFinalId);
 }

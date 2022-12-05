@@ -1,4 +1,4 @@
-package ecommerce.Gestores.app;
+package ecommerce.Gestores.models.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

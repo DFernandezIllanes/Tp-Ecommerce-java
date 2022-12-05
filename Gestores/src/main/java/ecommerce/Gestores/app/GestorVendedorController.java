@@ -1,8 +1,8 @@
 package ecommerce.Gestores.app;
 
-import ecommerce.Gestores.models.Gestor;
-import ecommerce.Gestores.models.PosiblePersonalizacion;
-import ecommerce.Gestores.models.ProductoBase;
+import ecommerce.Gestores.models.*;
+import ecommerce.Gestores.models.dtos.DTORtaPersonalizacion;
+import ecommerce.Gestores.models.dtos.DTORtaVinculacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,27 +35,29 @@ public class GestorVendedorController {
         }
     }
 
-    @GetMapping("/gestores/{gestorId}/productoBase/{productoBaseId}")
-    public DTORtaPersonalizacion posiblePersonalizacion(@PathVariable("gestorId") Long gestorId, @PathVariable("productoBaseId") Long productoBaseId) {
+    @GetMapping("/gestores/{gestorId}/productoBase/{productoBaseId}/areaPersonalizacion/{areaPersonalizacionStr}")
+    public DTORtaPersonalizacion posiblePersonalizacion(@PathVariable("gestorId") Long gestorId, @PathVariable("productoBaseId") Long productoBaseId, @PathVariable("areaPersonalizacionStr")String areaPersonalizacionStr) {
         Optional<Gestor> gestorOptional = repoGestor.findById(gestorId);
         Optional<ProductoBase> productoBaseOptional = repoProductoBase.findById(productoBaseId);
-        Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = Optional.ofNullable(repoPosiblePersonalizacion.findByProductoBaseId(productoBaseId));
+        Optional<PosiblePersonalizacion> posiblePersonalizacionOptional = Optional.ofNullable(repoPosiblePersonalizacion.findByProductoBaseIdAndAreaDePersonalizacion(productoBaseId,areaPersonalizacionStr));
 
         if (!gestorOptional.isPresent()) {
             return new DTORtaPersonalizacion("noexiste");
         }
 
-        if (!productoBaseOptional.isPresent()) {
-            return new DTORtaPersonalizacion("noexiste");
-        }
-
-        if (!posiblePersonalizacionOptional.isPresent()) {
+        if (!productoBaseOptional.isPresent() || !productoBaseOptional.get().isActivo()) {
             return new DTORtaPersonalizacion("noexiste");
         }
 
         ProductoBase productoBase = productoBaseOptional.get();
-        PosiblePersonalizacion personalizacion = posiblePersonalizacionOptional.get();
 
-        return new DTORtaPersonalizacion("existe", personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase.getPrecio());
+        if (posiblePersonalizacionOptional.isPresent()) {
+            PosiblePersonalizacion personalizacion = posiblePersonalizacionOptional.get();
+            if(personalizacion.isActivo()){
+                return new DTORtaPersonalizacion("existe", personalizacion.getAreaDePersonalizacion(), personalizacion.getTipoDePersonalizacion(), productoBase.getPrecio());
+            }
+            return new DTORtaPersonalizacion("noexiste");
+        }
+        return new DTORtaPersonalizacion("existe", "", "", productoBase.getPrecio());
     }
 }

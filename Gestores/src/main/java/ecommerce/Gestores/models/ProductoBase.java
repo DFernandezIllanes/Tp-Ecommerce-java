@@ -30,7 +30,7 @@ public class ProductoBase {
 
     @Column(name = "tiempDeFabricacion")
     @Getter @Setter
-    private String tiempoDeFabricacion;
+    private Integer tiempoDeFabricacion;
 
     @Column(name = "activo")
     @Getter @Setter
@@ -49,7 +49,6 @@ public class ProductoBase {
     }
 
     public ProductoBase(){
-        //this.personalizaciones = new ArrayList<>();
     }
 
     public ProductoBase(String nombre){
@@ -88,7 +87,7 @@ public class ProductoBase {
         //this.personalizaciones = new ArrayList<>();
     }
 
-    public ProductoBase(String nombre, Double precio, String descripcion, String tiempoDeFabricacion, Gestor gestor) {
+    public ProductoBase(String nombre, Double precio, String descripcion, Integer tiempoDeFabricacion, Gestor gestor) {
         this.nombre = nombre;
         this.precio = precio;
         this.descripcion = descripcion;

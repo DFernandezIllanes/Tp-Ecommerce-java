@@ -1,12 +1,7 @@
 package ecommerce.Vendedores.app;
 
-import ecommerce.Vendedores.models.ProductoFinal;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter @Setter
 public class DTOPublicacion {

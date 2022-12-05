@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e098e2a5-596d-44ed-addd-195cdbd57bbe" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/models/dtos/DTOCompra.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTORtaGestor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/controllers/CompradorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/controllers/CompradorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/models/Compra.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/models/Compra.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/models/dtos/DTODatosVenta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/models/dtos/DTODatosVenta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/proxys/TiendaProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ecommerce/Compradores/proxys/TiendaProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/DTORtaPersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTORtaPersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/DTORtaVinculacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTORtaVinculacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/GestorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/GestorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/GestorVendedorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/GestorVendedorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/ProductoBaseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/ProductoBaseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/RepoPosiblePersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/RepoPosiblePersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/RepoProductoBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/app/RepoProductoBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/DTODatosVenta.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/DTODatosVenta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/DTOGestor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTOGestor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/DTOPosiblePersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTOPosiblePersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/DTOProductoBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/dtos/DTOProductoBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/ProductoBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/java/ecommerce/Gestores/models/ProductoBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Gestores/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Gestores/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTODatosVenta.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTODatosVenta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTOPersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTOPersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTOProductoFinal.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTOProductoFinal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTOPublicacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTOPublicacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTORtaGestor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTORtaGestor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTORtaPersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTORtaPersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTORtaVinculacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTORtaVinculacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/DTOVendedor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTOVendedor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/GestorProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/GestorProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/RepoMetodoPago.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/RepoMetodoPago.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/RepoPersonalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/RepoPersonalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/TiendaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/TiendaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/VendedorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/app/VendedorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/DTOMedioPago.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/dtos/DTOMedioPago.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/Personalizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/java/ecommerce/Vendedores/models/Personalizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Vendedores/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Vendedores/src/main/resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2INfdKU0237yCvpiVUI8bQyHeSN" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;1c418f45edf35b8aabbe4b673e15db88&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="CompradoresApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="Compradores" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="ecommerce.Compradores.CompradoresApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e098e2a5-596d-44ed-addd-195cdbd57bbe" name="Changes" comment="" />
+      <created>1670027048995</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1670027048995</updated>
+      <workItem from="1670027050540" duration="3509000" />
+      <workItem from="1670071785979" duration="5916000" />
+      <workItem from="1670196645056" duration="82000" />
+      <workItem from="1670198577930" duration="12785000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ecommerce/Compradores/controllers/CompradorController.java</url>
+          <line>143</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
